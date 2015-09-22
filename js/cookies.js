@@ -1,4 +1,4 @@
-var docCookies = {
+var Cookies = {
     getItem: function(sKey) {
         if (!sKey) {
             return null;

@@ -10,6 +10,7 @@
   var reviewFieldsName = formContainer.querySelector('.review-fields-name');
   var reviewFieldsText = formContainer.querySelector('.review-fields-text');
 
+  restoreValuesFromCookies([reviewAuthor]);
 
   reviewAuthor.onkeyup = function(evt) {
 
@@ -43,7 +44,8 @@
           return;
       }
 
-      formContainer.submit();
+      saveValuesToCookies([reviewAuthor]);
+      alert("Urrraaaaa!");
 
   };
 
@@ -75,6 +77,35 @@
     showHideElement(elementHint, true);
     addRemoveClassToElement(elementInput, 'notify-ok', 'notify-error');
   }
+
+  function restoreValuesFromCookies(arrayOfElements) {
+    var element;
+
+    for (var i = 0; i < arrayOfElements.length; i++) {
+      element = arrayOfElements[i];
+
+      if (Cookies.hasItem(element.name)) {
+        element.value = Cookies.getItem(element.name);
+      }
+
+    }
+  }
+
+  function saveValuesToCookies(arrayOfElements) {
+
+    var element;
+    var myDateOfBirth = new Date(1986, 02, 12, 0, 0, 0, 0);
+    var today = new Date();
+    var days = Math.round((today - myDateOfBirth) / 1000 / 86400);
+    var endDateForCookie = new Date(today.getFullYear(), today.getMonth(), today.getDate() + days);
+
+    for (var i = 0; i < arrayOfElements.length; i++) {
+      element = arrayOfElements[i];
+      Cookies.setItem(element.name, element.value, endDateForCookie);
+    }
+  }
+
+  
 
 
 })();
