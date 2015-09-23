@@ -3,26 +3,29 @@
   var formOpenButton = document.querySelector('.reviews-controls-new');
   var formCloseButton = document.querySelector('.review-form-close');
 
+  var reviewForm = document.forms['review-form'];
 
-  var reviewAuthor = formContainer.querySelector('#review-name');
-  var reviewText   = formContainer.querySelector('#review-text');
+  var reviewAuthor = reviewForm['review-name'];
+  var reviewText   = reviewForm['review-text'];
+  var reviewMarks   = reviewForm.elements['review-mark'];
 
   var reviewFieldsName = formContainer.querySelector('.review-fields-name');
   var reviewFieldsText = formContainer.querySelector('.review-fields-text');
 
-  restoreValuesFromCookies([reviewAuthor]);
+  restoreValuesFromCookies([
+        { name: reviewAuthor.name, element: reviewAuthor },
+        { name: 'review-mark', element: reviewMarks }
+  ]);
+
+  updateInputs(reviewAuthor, reviewFieldsName);
+  updateInputs(reviewText, reviewFieldsText);
 
   reviewAuthor.onkeyup = function(evt) {
-
-      isEmptyString(reviewAuthor.value)
-        ? setElementNotValid(reviewAuthor, reviewFieldsName)
-        : setElementValid(reviewAuthor, reviewFieldsName)
+      updateInputs(reviewAuthor, reviewFieldsName);
   }
 
   reviewText.onkeyup = function(evt) {
-    isEmptyString(reviewText.value)
-      ? setElementNotValid(reviewText, reviewFieldsText)
-      : setElementValid(reviewText, reviewFieldsText);
+    updateInputs(reviewText, reviewFieldsText);  
   }
 
   formOpenButton.onclick = function(evt) {
@@ -44,7 +47,11 @@
           return;
       }
 
-      saveValuesToCookies([reviewAuthor]);
+      saveValuesToCookies([
+          { name: reviewAuthor.name, element: reviewAuthor },
+          { name: 'review-mark', element: reviewMarks }
+      ]);
+
       alert("Urrraaaaa!");
 
   };
@@ -79,33 +86,41 @@
   }
 
   function restoreValuesFromCookies(arrayOfElements) {
-    var element;
+    var saveObj;
 
     for (var i = 0; i < arrayOfElements.length; i++) {
-      element = arrayOfElements[i];
+      saveObj = arrayOfElements[i];
 
-      if (Cookies.hasItem(element.name)) {
-        element.value = Cookies.getItem(element.name);
+      if (Cookies.hasItem(saveObj.name)) {
+        saveObj.element.value = Cookies.getItem(saveObj.name);
       }
 
     }
   }
 
   function saveValuesToCookies(arrayOfElements) {
-
-    var element;
+    var saveObj;
     var myDateOfBirth = new Date(1986, 02, 12, 0, 0, 0, 0);
     var today = new Date();
     var days = Math.round((today - myDateOfBirth) / 1000 / 86400);
     var endDateForCookie = new Date(today.getFullYear(), today.getMonth(), today.getDate() + days);
 
     for (var i = 0; i < arrayOfElements.length; i++) {
-      element = arrayOfElements[i];
-      Cookies.setItem(element.name, element.value, endDateForCookie);
+      saveObj = arrayOfElements[i];
+      Cookies.setItem(saveObj.name, saveObj.element.value, endDateForCookie);
     }
+
   }
 
+  function updateInputs(inputElement, elementHint) {
 
+    isEmptyString(inputElement.value)
+      ? setElementNotValid(inputElement, elementHint)
+      : setElementValid(inputElement, elementHint);
+
+    return inputElement;
+
+  }
 
 
 
