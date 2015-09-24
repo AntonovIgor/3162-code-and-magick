@@ -389,3 +389,13 @@ input[type=radio]:checked + .review-mark-label {
   cursor: pointer;
   text-decoration: underline;
 }
+
+/* antonov */
+
+.notify-error {
+    background-color: #E0384A;
+}
+
+.notify-ok {
+  background-color: #38E08E;
+}
