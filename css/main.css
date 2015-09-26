@@ -184,10 +184,6 @@ input[type=radio]:checked + .reviews-filter-item {
   position: relative;
 }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> js-htmlacademy/master
 .review-load-failure .review-author {
   visibility: hidden;
 }
