@@ -12,7 +12,7 @@
   var reviewFieldsName = formContainer.querySelector('.review-fields-name');
   var reviewFieldsText = formContainer.querySelector('.review-fields-text');
 
-  restoreValuesFromCookies([
+  Cookies.restoreValuesFromCookies([
         { name: reviewAuthor.name, element: reviewAuthor },
         { name: 'review-mark', element: reviewMarks }
   ]);
@@ -25,7 +25,7 @@
   }
 
   reviewText.onkeyup = function(evt) {
-    updateInputs(reviewText, reviewFieldsText);  
+    updateInputs(reviewText, reviewFieldsText);
   }
 
   formOpenButton.onclick = function(evt) {
@@ -47,7 +47,7 @@
           return;
       }
 
-      saveValuesToCookies([
+      Cookies.saveValuesToCookies([
           { name: reviewAuthor.name, element: reviewAuthor },
           { name: 'review-mark', element: reviewMarks }
       ]);
@@ -83,33 +83,6 @@
   function setElementValid(elementInput, elementHint) {
     showHideElement(elementHint, true);
     addRemoveClassToElement(elementInput, 'notify-ok', 'notify-error');
-  }
-
-  function restoreValuesFromCookies(arrayOfElements) {
-    var saveObj;
-
-    for (var i = 0; i < arrayOfElements.length; i++) {
-      saveObj = arrayOfElements[i];
-
-      if (Cookies.hasItem(saveObj.name)) {
-        saveObj.element.value = Cookies.getItem(saveObj.name);
-      }
-
-    }
-  }
-
-  function saveValuesToCookies(arrayOfElements) {
-    var saveObj;
-    var myDateOfBirth = new Date(1986, 02, 12, 0, 0, 0, 0);
-    var today = new Date();
-    var days = Math.round((today - myDateOfBirth) / 1000 / 86400);
-    var endDateForCookie = new Date(today.getFullYear(), today.getMonth(), today.getDate() + days);
-
-    for (var i = 0; i < arrayOfElements.length; i++) {
-      saveObj = arrayOfElements[i];
-      Cookies.setItem(saveObj.name, saveObj.element.value, endDateForCookie);
-    }
-
   }
 
   function updateInputs(inputElement, elementHint) {

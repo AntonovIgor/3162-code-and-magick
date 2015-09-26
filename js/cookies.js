@@ -5,6 +5,7 @@ var Cookies = {
         }
         return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
     },
+
     setItem: function(sKey, sValue, vEnd, sPath, sDomain, bSecure) {
         if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) {
             return false;
@@ -26,6 +27,7 @@ var Cookies = {
         document.cookie = encodeURIComponent(sKey) + "=" + encodeURIComponent(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "") + (bSecure ? "; secure" : "");
         return true;
     },
+
     removeItem: function(sKey, sPath, sDomain) {
         if (!this.hasItem(sKey)) {
             return false;
@@ -33,17 +35,47 @@ var Cookies = {
         document.cookie = encodeURIComponent(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "");
         return true;
     },
+
     hasItem: function(sKey) {
         if (!sKey) {
             return false;
         }
         return (new RegExp("(?:^|;\\s*)" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
     },
+
     keys: function() {
         var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
         for (var nLen = aKeys.length, nIdx = 0; nIdx < nLen; nIdx++) {
             aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]);
         }
         return aKeys;
+    },
+
+    saveValuesToCookies: function(arrayOfElements) {
+      var saveObj;
+      var myDateOfBirth = new Date(1986, 02, 12, 0, 0, 0, 0);
+      var today = new Date();
+      var days = Math.round((today - myDateOfBirth) / 1000 / 86400);
+      var endDateForCookie = new Date(today.getFullYear(), today.getMonth(), today.getDate() + days);
+
+      for (var i = 0; i < arrayOfElements.length; i++) {
+        saveObj = arrayOfElements[i];
+        this.setItem(saveObj.name, saveObj.element.value, endDateForCookie);
+      }
+
+    },
+
+    restoreValuesFromCookies: function(arrayOfElements) {
+      var saveObj;
+
+      for (var i = 0; i < arrayOfElements.length; i++) {
+        saveObj = arrayOfElements[i];
+
+        if (this.hasItem(saveObj.name)) {
+          saveObj.element.value = this.getItem(saveObj.name);
+        }
+
+      }
     }
+
 };
