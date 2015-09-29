@@ -184,6 +184,23 @@ input[type=radio]:checked + .reviews-filter-item {
   position: relative;
 }
 
+.reviews-list-loading,
+.reviews-load-failure {
+  text-align: center;
+  padding-bottom: 40px;
+}
+
+.reviews-list-loading:after {
+  content: 'Загрузка...';
+}
+
+.reviews-load-failure:after {
+  content: '';
+  background: url('../img/icon-cross.png') no-repeat center;
+  display: inline-block;
+  height: 40px;
+  width: 40px;
+}
 
 .review-load-failure .review-author {
   visibility: hidden;
@@ -389,14 +406,4 @@ input[type=radio]:checked + .review-mark-label {
 .review-fields-label {
   cursor: pointer;
   text-decoration: underline;
-}
-
-/* antonov */
-
-.notify-error {
-    background-color: #E0384A;
-}
-
-.notify-ok {
-  background-color: #38E08E;
 }
