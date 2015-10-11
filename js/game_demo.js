@@ -25,14 +25,6 @@
     changeBackgroundPosition(headerCloudsContainer, getChordsForClouds());
   }
 
-  function changeActiveParallax(active) {
-    if (active) {
-      initScroll();
-    } else {
-      window.removeEventListener('scroll', changeCloudsPosition(), false);
-    }
-  }
-
   function changeBackgroundPosition(element, newPositionX) {
     element.style.backgroundPositionX = newPositionX + 'px';
   }
@@ -40,8 +32,7 @@
   function isVisiblePosition() {
     var result = headerCloudsContainer.getBoundingClientRect().bottom > 0;
 
-    if (!result) {
-        console.log('Параллакс отключен');
+    if (!result) {        
         window.dispatchEvent(new CustomEvent('parallaxNeeded'));
     }
 
