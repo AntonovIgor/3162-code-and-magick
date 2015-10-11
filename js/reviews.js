@@ -17,20 +17,37 @@
  };
 
  var REQUEST_FAILTURE_TIMEOUT = 10000;
+ var PAGE_SIZE = 3;
  var reviews;
+
+ var currentReviews;
+ var currentPage;
+
  //var filteredReviews;
 
  //Контейнер для помещения списка отзывов
  var reviewsContainer = document.querySelector('.reviews-list');
 
-
  // Скрываем блок с фильтрами
  var reviewsFilter = document.querySelector('.reviews-filter');
  showHideBlock(reviewsFilter, false);
 
+ //Кнопка для загрузки дополнительных страниц
+ var btnLoadNextPage = document.querySelector('.reviews-controls-more');
+
+ btnLoadNextPage.addEventListener('click', function(evt) {
+   if (isNextPageAvailable()) {
+      renderReviews(currentReviews, currentPage++, false);
+   }
+ });
+
+
  //Рендеринг списка отзывов
  loadReviewsList(function(loadedReviews) {
    reviews = loadedReviews;
+   currentReviews = reviews;
+   currentPage = 0;
+
    renderReviews(reviews);
  });
 
@@ -40,9 +57,24 @@
  initFilters();
 
 
- function renderReviews(arrayOfReviews) {
+
+
+
+ function renderReviews(arrayOfReviews, pageNumber, replace) {
+   replace = typeof replace !== 'underfined' ? replace : true;
+   pageNumber = pageNumber || 0;
+
+   if (replace) {
+     reviewsContainer.classList.remove('reviews-load-failure');
+     reviewsContainer.innerHTML = '';
+   }
+
    var reviewTemplate = document.getElementById('review-template');
    var reviewsFragment = document.createDocumentFragment();
+
+   var reviewsFrom = pageNumber * PAGE_SIZE;
+   var reviewsTo = reviewsFrom + PAGE_SIZE;
+   arrayOfReviews = arrayOfReviews.slice(reviewsFrom, reviewsTo);
 
    arrayOfReviews.forEach(function(item) {
      var newReviewElement = reviewTemplate.content.children[0].cloneNode(true);
@@ -76,11 +108,10 @@
 
    reviewsContainer.appendChild(reviewsFragment);
  });
-
  };
 
 //Загрузка списка отзывов Ajax
-function loadReviewsList(callback) {
+ function loadReviewsList(callback) {
   var xhr = new XMLHttpRequest();
   xhr.timeout = REQUEST_FAILTURE_TIMEOUT;
   xhr.open('get', 'data/reviews.json');
@@ -116,11 +147,9 @@ function loadReviewsList(callback) {
 
 };
 
- function showLoadFailture() {
+function showLoadFailture() {
    reviewsContainer.classList.add('reviews-load-failure')
- }
-
-
+}
 
  function filterReviews(reviewsToFilter, filterId) {
    var filteredReviews = reviewsToFilter.slice(0);
@@ -206,11 +235,10 @@ function loadReviewsList(callback) {
  }
 
  function setFilterForReviews(filterId) {
-   var filteredReviews = filterReviews(reviews, filterId);
-   reviewsContainer.innerHTML = '';
-   renderReviews(filteredReviews);
+   currentReviews = filterReviews(reviews, filterId);
+   currentPage = 0;
+   renderReviews(currentReviews, currentPage, true);
  }
-
 
  function showHideBlock(element, visible) {
    !visible ?
@@ -218,6 +246,10 @@ function loadReviewsList(callback) {
     element.classList.remove('invisible');
 
     return element;
+ }
+
+ function isNextPageAvailable() {
+   return currentPage < Math.ceil(reviews.length / PAGE_SIZE);
  }
 
  function initFilters() {
@@ -229,5 +261,6 @@ function loadReviewsList(callback) {
    });
 
  }
+
 
 })();
