@@ -30,15 +30,19 @@
 
  // Скрываем блок с фильтрами
  var reviewsFilter = document.querySelector('.reviews-filter');
+ var reviewsFiltersRadioBtn = reviewsFilter.elements['reviews'];
+
  showHideBlock(reviewsFilter, false);
 
  //Кнопка для загрузки дополнительных страниц
  var btnLoadNextPage = document.querySelector('.reviews-controls-more');
+ showHideBlock(btnLoadNextPage, true);
 
  btnLoadNextPage.addEventListener('click', function(evt) {
    if (isNextPageAvailable()) {
       renderReviews(currentReviews, currentPage++, false);
    }
+   showHideBlock(btnLoadNextPage, isNextPageAvailable());
  });
 
 
@@ -48,7 +52,11 @@
    currentReviews = reviews;
    currentPage = 0;
 
-   renderReviews(reviews);
+   var filterId = localStorage.getItem('filterId') || 'reviews-all';
+   setFilterForReviews(filterId);
+
+   reviewsFiltersRadioBtn.value = filterId;
+
  });
 
  //Вновь отображаем блок с фильтрами
@@ -195,6 +203,7 @@ function showLoadFailture() {
 
    }
 
+   localStorage.setItem('filterId', filterId);
    return filteredReviews;
 
  }
@@ -238,6 +247,7 @@ function showLoadFailture() {
    currentReviews = filterReviews(reviews, filterId);
    currentPage = 0;
    renderReviews(currentReviews, currentPage, true);
+   showHideBlock(btnLoadNextPage, true);
  }
 
  function showHideBlock(element, visible) {
@@ -259,7 +269,6 @@ function showLoadFailture() {
      var clickedFilter = evt.target;
      setFilterForReviews(clickedFilter.id);
    });
-
  }
 
 
