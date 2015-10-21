@@ -1,3 +1,5 @@
+'use strict';
+
 (function() {
 
   var TIMEOUT_FOR_PARALLAX = 100;
@@ -9,17 +11,17 @@
   function initScroll() {
     var someTimeout;
     window.addEventListener('scroll', function() {
-        clearTimeout(someTimeout);
-        someTimeout = setTimeout(checkCloudPosition, TIMEOUT_FOR_PARALLAX);
+      clearTimeout(someTimeout);
+      someTimeout = setTimeout(checkCloudPosition, TIMEOUT_FOR_PARALLAX);
     });
 
     window.addEventListener('hideBlockWithColouds', function() {
       changeCloudsPosition();
-    })
+    });
   }
 
   function checkCloudPosition() {
-    if  (isVisiblePosition()) {
+    if (isVisiblePosition()) {
       window.dispatchEvent(new CustomEvent('hideBlockWithColouds'));
     }
   }

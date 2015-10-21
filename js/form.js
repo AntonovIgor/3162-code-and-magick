@@ -1,3 +1,10 @@
+/*
+  global
+    Cookies: true
+*/
+
+'use strict';
+
 (function() {
   var formContainer = document.querySelector('.overlay-container');
   var formOpenButton = document.querySelector('.reviews-controls-new');
@@ -6,8 +13,8 @@
   var reviewForm = document.forms['review-form'];
 
   var reviewAuthor = reviewForm['review-name'];
-  var reviewText   = reviewForm['review-text'];
-  var reviewMarks   = reviewForm.elements['review-mark'];
+  var reviewText = reviewForm['review-text'];
+  var reviewMarks = reviewForm.elements['review-mark'];
 
   var reviewFieldsName = formContainer.querySelector('.review-fields-name');
   var reviewFieldsText = formContainer.querySelector('.review-fields-text');
@@ -20,13 +27,13 @@
   updateInputs(reviewAuthor, reviewFieldsName);
   updateInputs(reviewText, reviewFieldsText);
 
-  reviewAuthor.onkeyup = function(evt) {
-      updateInputs(reviewAuthor, reviewFieldsName);
-  }
+  reviewAuthor.onkeyup = function() {
+    updateInputs(reviewAuthor, reviewFieldsName);
+  };
 
-  reviewText.onkeyup = function(evt) {
+  reviewText.onkeyup = function() {
     updateInputs(reviewText, reviewFieldsText);
-  }
+  };
 
   formOpenButton.onclick = function(evt) {
     evt.preventDefault();
@@ -40,29 +47,29 @@
 
   formContainer.onsubmit = function(evt) {
 
-      evt.preventDefault();
+    evt.preventDefault();
 
-      if (isEmptyString(reviewAuthor.value) || isEmptyString(reviewText.value)) {
-          alert('Заполните обязательные поля!');
-          return;
-      }
+    if (isEmptyString(reviewAuthor.value) || isEmptyString(reviewText.value)) {
+      console.log('Заполните обязательные поля!');
+      return;
+    }
 
-      Cookies.saveValuesToCookies([
+    Cookies.saveValuesToCookies([
           { name: reviewAuthor.name, element: reviewAuthor },
           { name: 'review-mark', element: reviewMarks }
-      ]);
+    ]);
 
-      alert("Urrraaaaa!");
+    console.log('Urrraaaaa!');
 
   };
 
   function isEmptyString(str) {
 
-      if (!typeof str  == 'string') {
-        return true;
-      }
+    if (!typeof str === 'string') {
+      return true;
+    }
 
-      return str.trim() === "";
+    return str.trim() === '';
   }
 
   function addRemoveClassToElement(element, addClassName, removeClassName) {
@@ -87,9 +94,11 @@
 
   function updateInputs(inputElement, elementHint) {
 
-    isEmptyString(inputElement.value)
-      ? setElementNotValid(inputElement, elementHint)
-      : setElementValid(inputElement, elementHint);
+    if (isEmptyString(inputElement.value)) {
+      setElementNotValid(inputElement, elementHint);
+    } else {
+      setElementValid(inputElement, elementHint);
+    }
 
     return inputElement;
 

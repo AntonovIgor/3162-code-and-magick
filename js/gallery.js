@@ -1,3 +1,5 @@
+'use strict';
+
 (function() {
 
   var Key = {
@@ -8,13 +10,13 @@
 
   var overlayGalleryContainer = document.querySelector('.overlay-gallery');
   var galleryContainer = document.querySelector('.photogallery');
-  var closeGalleryBtn =  document.querySelector('.overlay-gallery-close');
+  var closeGalleryBtn = document.querySelector('.overlay-gallery-close');
 
 
   galleryContainer.addEventListener('click', function(evt) {
     if (doesHaveParent(evt.target, 'photogallery-image')) {
       showGallery();
-    };
+    }
   });
 
   function doesHaveParent(element, className) {
@@ -47,7 +49,7 @@
   }
 
   function keyHandler(evt) {
-    switch(evt.keyCode) {
+    switch (evt.keyCode) {
       case Key.LEFT:
         console.log('show previous photo');
         break;
