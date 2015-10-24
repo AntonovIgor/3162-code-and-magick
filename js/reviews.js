@@ -1,14 +1,7 @@
+/* global Review: true */
 'use strict';
 
 (function() {
-
-  var ratingStarsClassName = {
-    '1': 'review-rating-one',
-    '2': 'review-rating-two',
-    '3': 'review-rating-three',
-    '4': 'review-rating-four',
-    '5': 'review-rating-five'
-  };
 
   var readyState = {
     'UNSENT': 0,
@@ -31,6 +24,8 @@
   // Скрываем блок с фильтрами
   var reviewsFilter = document.querySelector('.reviews-filter');
   var reviewsFiltersRadioBtn = reviewsFilter.elements['reviews'];
+
+  var renderedReviews = [];
 
   showHideBlock(reviewsFilter, false);
 
@@ -66,16 +61,18 @@
   initFilters();
 
   function renderReviews(arrayOfReviews, pageNumber, replace) {
-    // replace = typeof replace !== 'underfined' ? replace : true;
-    replace = replace ? replace : true;
+    replace = typeof replace !== 'undefined' ? replace : true;
     pageNumber = pageNumber || 0;
 
     if (replace) {
+      var el;
+      while ((el = renderedReviews.shift())) {
+        el.unrender();
+      }
+
       reviewsContainer.classList.remove('reviews-load-failure');
-      reviewsContainer.innerHTML = '';
     }
 
-    var reviewTemplate = document.getElementById('review-template');
     var reviewsFragment = document.createDocumentFragment();
 
     var reviewsFrom = pageNumber * PAGE_SIZE;
@@ -83,37 +80,12 @@
     arrayOfReviews = arrayOfReviews.slice(reviewsFrom, reviewsTo);
 
     arrayOfReviews.forEach(function(item) {
-      var newReviewElement = reviewTemplate.content.children[0].cloneNode(true);
-      var oldAuthorPhoto = newReviewElement.querySelector('.review-author');
-
-
-      newReviewElement.querySelector('.review-rating').classList.add(ratingStarsClassName[item['rating']]);
-      newReviewElement.querySelector('.review-text').textContent = item['description'];
-
-      if (item['author']['picture']) {
-
-        var authorPicture = new Image();
-        authorPicture.src = item['author']['picture'];
-        authorPicture.width = 124;
-        authorPicture.height = 124;
-        authorPicture.alt = item['author']['name'];
-        authorPicture.classList.add('review-author');
-
-        var authorPictureLoadTimeOut = setTimeout(function() {
-          newReviewElement.classList.add('review-load-failure');
-        }, REQUEST_FAILTURE_TIMEOUT);
-
-        authorPicture.onload = function() {
-          newReviewElement.replaceChild(authorPicture, oldAuthorPhoto);
-          clearTimeout(authorPictureLoadTimeOut);
-        };
-
-        reviewsFragment.appendChild(newReviewElement);
-
-      }
-
-      reviewsContainer.appendChild(reviewsFragment);
+      var newReviewElement = new Review(item);
+      newReviewElement.render(reviewsFragment);
+      renderedReviews.push(newReviewElement);
     });
+
+    reviewsContainer.appendChild(reviewsFragment);
   }
 
 // Загрузка списка отзывов Ajax
