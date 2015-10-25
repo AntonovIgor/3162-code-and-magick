@@ -16,7 +16,6 @@
 
   var Review = function(data) {
     this._data = data;
-    //this._onClick = this._onClick.bind(this);
   };
 
   Review.prototype.render = function(container) {
@@ -56,7 +55,6 @@
 
   Review.prototype.unrender = function() {
     this._element.parentNode.removeChild(this._element);
-    //this._element.removeEventListener('click', this._onClick);
     this._element = null;
   };
 

@@ -1,4 +1,4 @@
-/* global Review: true */
+/* global Review: true Gallery: true */
 'use strict';
 
 (function() {
@@ -20,6 +20,10 @@
 
   // Контейнер для помещения списка отзывов
   var reviewsContainer = document.querySelector('.reviews-list');
+  var galleryContainer = document.querySelector('.photogallery');
+
+  var gallery = new Gallery();
+  var picturesForGallery = [];
 
   // Скрываем блок с фильтрами
   var reviewsFilter = document.querySelector('.reviews-filter');
@@ -59,6 +63,7 @@
   showHideBlock(reviewsFilter, true);
 
   initFilters();
+  initGallery();
 
   function renderReviews(arrayOfReviews, pageNumber, replace) {
     replace = typeof replace !== 'undefined' ? replace : true;
@@ -244,5 +249,32 @@
     });
   }
 
+  function doesHaveParent(element, className) {
+    do {
+      if (element.classList.contains(className)) {
+        return true;
+      }
+
+      element = element.parentElement;
+    } while (element);
+
+    return false;
+  }
+
+  function initGallery() {
+    var imagesList = document.querySelectorAll('.photogallery a.photogallery-image img');
+    var imagesListArray = Array.prototype.slice.call(imagesList);
+
+    imagesListArray.forEach(function(item) {
+      picturesForGallery.push(item.src);
+    });
+
+    galleryContainer.addEventListener('click', function(evt) {
+      if (doesHaveParent(evt.target, 'photogallery-image')) {
+        gallery.setPhotos(picturesForGallery);
+        gallery.show(picturesForGallery.indexOf(evt.target.src));
+      }
+    });
+  }
 
 })();
