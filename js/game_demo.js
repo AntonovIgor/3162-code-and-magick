@@ -31,7 +31,7 @@
   }
 
   function changeBackgroundPosition(element, newPositionX) {
-    element.style.backgroundPosition = newPositionX + 'px';
+    element.style.backgroundPosition = newPositionX + 'px top';
   }
 
   function isVisiblePosition() {
