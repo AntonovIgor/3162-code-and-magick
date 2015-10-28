@@ -36,17 +36,17 @@
   };
 
   Gallery.prototype.setCurrentPhoto = function(index) {
-    var index = clamp(index, 0, this._photos.length - 1);
+    var newIndex = clamp(index, 0, this._photos.length - 1);
 
-    if (this._currentPhoto === index) {
+    if (this._currentPhoto === newIndex) {
       return;
     }
 
-    this._currentPhoto = index;
+    this._currentPhoto = newIndex;
     this._showCurrentPhoto();
   };
 
-  Gallery.prototype._showCurrentPhoto = function(evt) {
+  Gallery.prototype._showCurrentPhoto = function() {
     this._pictureElement.innerHTML = '';
 
     var imageEl = new Image();
