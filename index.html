@@ -13,7 +13,6 @@
 
 <header>
   <div class="header-clouds"></div>
-  <div class="header-wizard"></div>
   <div class="header-fence"></div>
   <div class="header-tree"></div>
 
@@ -35,7 +34,7 @@
     <a href="#" class="photogallery-image"><img src="img/screenshots/3.png" width="292" /></a>
     <a href="#" class="photogallery-image"><img src="img/screenshots/4.png" height="271" /></a>
     <a href="#" class="photogallery-image"><img src="img/screenshots/5.png" height="271" /></a>
-    <a href="#" class="photogallery-image"><img src="img/screenshots/6.png" width="292" /></a>
+    <a href="#" class="photogallery-image" data-replacement-video="img/screenshots/cm-sample.mp4"><img src="img/screenshots/6.png" width="292" /></a>
   </section>
 
   <section class="main-section reviews">
@@ -64,7 +63,7 @@
 </main>
 
 <div class="overlay-container invisible">
-  <form class="overlay review-form" name="review-form" action="index.html" method="post">
+  <form class="overlay review-form" action="index.html" method="post">
     <h2 class="review-form-title">Оставить отзыв</h2>
     <span class="review-form-close">&times;</span>
 
@@ -123,8 +122,6 @@
   </article>
 </template>
 
-<script src="js/cookies.js"></script>
-
 <script src="js/form.js"></script>
 <script src="js/views/photo.js"></script>
 <script src="js/gallery.js"></script>
@@ -139,6 +136,7 @@
 
 
 
+<script src="js/game.js"></script>
 
 </body>
 </html>
