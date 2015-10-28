@@ -1,11 +1,13 @@
-/*
-  exported
-    Cookies: true
-*/
-
+/* exported Cookies: true */
 'use strict';
 
 var Cookies = {
+
+  /**
+  * Получение значение из Cookie по ключу
+  * @param {string} sKey
+  * @return {string}
+  */
   getItem: function(sKey) {
     if (!sKey) {
       return null;
@@ -14,6 +16,15 @@ var Cookies = {
     return decodeURIComponent(document.cookie.replace(new RegExp('(?:(?:^|.*;)\\s*' + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, '\\$&') + '\\s*\\=\\s*([^;]*).*$)|^.*$'), '$1')) || null;
   },
 
+  /**
+  * Установка значения в cookie
+  * @param {string} sKey
+  * @param {string||number} sValue
+  * @param {date} vEnd
+  * @param {string} sPath
+  * @param {string} sDomain
+  * @param {boolean} bSecure
+  */
   setItem: function(sKey, sValue, vEnd, sPath, sDomain, bSecure) {
     if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) {
       return false;
@@ -38,6 +49,13 @@ var Cookies = {
     return true;
   },
 
+  /**
+  * Удалить значение из Cookie
+  * @param {string} sKey
+  * @param {string} sPath
+  * @param {string} sDomain
+  * @return {boolean}
+  */
   removeItem: function(sKey, sPath, sDomain) {
     if (!this.hasItem(sKey)) {
       return false;
@@ -46,6 +64,11 @@ var Cookies = {
     return true;
   },
 
+  /**
+  * Провярет наличие значения в Cookie по ключу
+  * @param {string} sKey
+  * @return {boolean}
+  */
   hasItem: function(sKey) {
     if (!sKey) {
       return false;
@@ -53,6 +76,10 @@ var Cookies = {
     return (new RegExp('(?:^|;\\s*)' + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, '\\$&') + '\\s*\\=')).test(document.cookie);
   },
 
+  /**
+  * Возвращает список достпных ключей
+  * @return {Array}
+  */
   keys: function() {
     var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, '').split(/\s*(?:\=[^;]*)?;\s*/);
     for (var nLen = aKeys.length, nIdx = 0; nIdx < nLen; nIdx++) {
@@ -61,6 +88,12 @@ var Cookies = {
     return aKeys;
   },
 
+  /**
+  * Сохраняет значения в Cookies. Значения передаются в массиве в
+  * в виде объектов; Каждый объект должен содержать name (ключ) и
+  * value (значение)
+  * @param {Array.<Object>} arrayOfElements
+  */
   saveValuesToCookies: function(arrayOfElements) {
     var saveObj;
     var myDateOfBirth = new Date(1986, 3, 12, 0, 0, 0, 0);
@@ -75,6 +108,11 @@ var Cookies = {
 
   },
 
+  /**
+  * Считывание из cookie значений для коллекции элементов
+  * @param {Array.<Object>} arrayOfElements
+  * @return {Array.<Object>}
+  */
   restoreValuesFromCookies: function(arrayOfElements) {
     var saveObj;
 
