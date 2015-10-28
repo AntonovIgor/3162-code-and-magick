@@ -25,6 +25,7 @@
     newReviewElement.querySelector('.review-rating').classList.add(ratingStarsClassName[this._data['rating']]);
     newReviewElement.querySelector('.review-text').textContent = this._data['description'];
 
+    // TODO: нужно убрать дублирующуюся строку
     newReviewElement.querySelector('.review-rating').classList.add(ratingStarsClassName[this._data['rating']]);
     newReviewElement.querySelector('.review-text').textContent = this._data['description'];
 
