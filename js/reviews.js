@@ -1,141 +1,154 @@
-/* global Review: true Gallery: true */
+/* global Gallery: true ReviewsCollection: true ReviewView: true */
 'use strict';
 
 (function() {
 
-  var readyState = {
-    'UNSENT': 0,
-    'OPENED': 1,
-    'HEADERS_RECEIVED': 2,
-    'LOADING': 3,
-    'DONE': 4
-  };
 
+  /**
+   * @const
+   * @type {number}
+  */
   var REQUEST_FAILTURE_TIMEOUT = 10000;
+
+  /**
+  * @const
+  * @type {number}
+  */
   var PAGE_SIZE = 3;
-  var reviews;
 
-  var currentReviews;
-  var currentPage;
+  /**
+  * @type {number}
+  */
+  var currentPage = 0;
 
-  // Контейнер для помещения списка отзывов
+  /**
+  * @type {Element}
+  */
   var reviewsContainer = document.querySelector('.reviews-list');
+
+  /**
+  * @type {Element}
+  */
   var galleryContainer = document.querySelector('.photogallery');
 
+  /**
+  * @type {Gallery}
+  */
   var gallery = new Gallery();
+
+  /**
+  * @type {Array}
+  */
   var picturesForGallery = [];
 
-  // Скрываем блок с фильтрами
+  /**
+  * @type {Element}
+  */
   var reviewsFilter = document.querySelector('.reviews-filter');
+
+  /**
+  * @type {Element}
+  */
   var reviewsFiltersRadioBtn = reviewsFilter.elements['reviews'];
 
-  var renderedReviews = [];
+  /**
+  * @type {ReviewsCollection}
+  */
+  var reviewsCollection = new ReviewsCollection();
+
+  /**
+  * @type {Array.<Object>}
+  */
+  var initiallyLoaded = [];
+
+  /**
+  * @type {Array.<ReviewView>}
+  */
+  var renderedViews = [];
+
+  /**
+  * @type {Element}
+  */
+  var btnLoadNextPage = document.querySelector('.reviews-controls-more');
+
+
 
   showHideBlock(reviewsFilter, false);
-
-  // Кнопка для загрузки дополнительных страниц
-  var btnLoadNextPage = document.querySelector('.reviews-controls-more');
   showHideBlock(btnLoadNextPage, true);
 
-  btnLoadNextPage.addEventListener('click', function() {
-    if (isNextPageAvailable()) {
-      renderReviews(currentReviews, currentPage++, false);
-    }
+  reviewsCollection.fetch({ timeout: REQUEST_FAILTURE_TIMEOUT }).success(function(loaded, state, jqXHR) {
+    initiallyLoaded = jqXHR.responseJSON;
 
-    showHideBlock(btnLoadNextPage, isNextPageAvailable());
+    initFilters();
+    setActiveFilter(localStorage.getItem('filterId') || 'sort-by-default');
+
+  }).fail(function() {
+    showLoadFailture();
   });
 
-
- // Рендеринг списка отзывов
-  loadReviewsList(function(loadedReviews) {
-    reviews = loadedReviews;
-    currentReviews = reviews;
-    currentPage = 0;
-
-    var filterId = localStorage.getItem('filterId') || 'reviews-all';
-    setFilterForReviews(filterId);
-
-    reviewsFiltersRadioBtn.value = filterId;
-
-  });
-
-  // Вновь отображаем блок с фильтрами
   showHideBlock(reviewsFilter, true);
-
-  initFilters();
   initGallery();
+  initBtnLoadNextPage();
 
-  function renderReviews(arrayOfReviews, pageNumber, replace) {
-    replace = typeof replace !== 'undefined' ? replace : true;
-    pageNumber = pageNumber || 0;
 
-    if (replace) {
-      var el;
-      while ((el = renderedReviews.shift())) {
-        el.unrender();
+
+  /**
+  * Инициализация кнопки для загрузки дополнительных отзывов
+  */
+  function initBtnLoadNextPage() {
+    btnLoadNextPage.addEventListener('click', function() {
+      if (isNextPageAvailable()) {
+        renderReviews(currentPage++, false);
       }
 
-      reviewsContainer.classList.remove('reviews-load-failure');
-    }
+      showHideBlock(btnLoadNextPage, isNextPageAvailable());
+    });
+  }
 
+  /**
+  * Постраничный вывод отзывов
+  * @param {number} pageNumber
+  * @param {boolean=} replace
+  */
+  function renderReviews(pageNumber, replace) {
     var reviewsFragment = document.createDocumentFragment();
-
     var reviewsFrom = pageNumber * PAGE_SIZE;
     var reviewsTo = reviewsFrom + PAGE_SIZE;
-    arrayOfReviews = arrayOfReviews.slice(reviewsFrom, reviewsTo);
 
-    arrayOfReviews.forEach(function(item) {
-      var newReviewElement = new Review(item);
-      newReviewElement.render(reviewsFragment);
-      renderedReviews.push(newReviewElement);
+    if (replace) {
+      while (renderedViews.length) {
+        var viewToRemove = renderedViews.shift();
+        reviewsContainer.removeChild(viewToRemove.el);
+        viewToRemove.remove();
+      }
+    }
+
+    reviewsCollection.slice(reviewsFrom, reviewsTo).forEach(function(model) {
+      var view = new ReviewView({ model: model });
+      view.render();
+      reviewsFragment.appendChild(view.el);
+      renderedViews.push(view);
     });
 
     reviewsContainer.appendChild(reviewsFragment);
   }
 
-// Загрузка списка отзывов Ajax
-  function loadReviewsList(callback) {
-    var xhr = new XMLHttpRequest();
-    xhr.timeout = REQUEST_FAILTURE_TIMEOUT;
-    xhr.open('get', 'data/reviews.json');
-    xhr.send();
-
-    xhr.onreadystatechange = function(evt) {
-      var loadedXhr = evt.target;
-
-      switch (loadedXhr.readyState) {
-        case readyState.OPENED:
-        case readyState.HEADERS_RECEIVED:
-        case readyState.LOADING:
-          reviewsContainer.classList.add('reviews-list-loading');
-          break;
-        case readyState.DONE:
-        default:
-          if (xhr.status === 200) {
-            var receivedData = loadedXhr.response;
-            reviewsContainer.classList.remove('reviews-list-loading');
-            callback(JSON.parse(receivedData));
-          }
-
-          if (xhr.status > 400) {
-            showLoadFailture();
-          }
-          break;
-      }
-    };
-
-    xhr.ontimeout = function() {
-      showLoadFailture();
-    };
-
-  }
-
+  /**
+  * Отображение ошибки загрузки списка
+  */
   function showLoadFailture() {
     reviewsContainer.classList.add('reviews-load-failure');
   }
 
-  function filterReviews(reviewsToFilter, filterId) {
-    var filteredReviews = reviewsToFilter.slice(0);
+  /**
+  * Фильтрует список отзывов по filterId. Возвращает
+  * отфильтрованный список и записывает примененный фильтр
+  * в локальное хранилище.
+  * @param {string} filterId
+  * @return {Array.<Object>}
+  */
+  function filterReviews(filterId) {
+    var filteredReviews = initiallyLoaded.slice(0);
 
     switch (filterId) {
       case 'reviews-good':
@@ -158,7 +171,7 @@
 
       case 'reviews-popular':
 
-        filteredReviews = reviewsToFilter.slice(0);
+        filteredReviews = initiallyLoaded.slice(0);
         sortItems(filteredReviews, 'review-rating', 'desc');
         break;
 
@@ -173,16 +186,23 @@
 
       default:
 
-        filteredReviews = reviewsToFilter.slice(0);
+        filteredReviews = initiallyLoaded.slice(0);
         break;
 
     }
 
     localStorage.setItem('filterId', filterId);
-    return filteredReviews;
-
+    reviewsCollection.reset(filteredReviews);
   }
 
+  /**
+  * Функция выполняет сортировку коллекции элементов.
+  * Сортировка может быть выполнена по произвольному свойству
+  * объекта и в определенном направлении (asc, desc)
+  * @param {Array.<Object>} items
+  * @param {string} property
+  * @param {string} sortType
+  */
   function sortItems(items, property, sortType) {
 
     switch (sortType) {
@@ -219,13 +239,14 @@
 
   }
 
-  function setFilterForReviews(filterId) {
-    currentReviews = filterReviews(reviews, filterId);
-    currentPage = 0;
-    renderReviews(currentReviews, currentPage, true);
-    showHideBlock(btnLoadNextPage, true);
-  }
 
+  /**
+  * Функция позволяет скрыть произвольный элемент
+  * путем добавления для него класса "Invisible".
+  * @param {Element} element
+  * @param {boolean} visible
+  * @return {Element}
+  */
   function showHideBlock(element, visible) {
     if (!visible) {
       element.classList.add('invisible');
@@ -236,19 +257,51 @@
     return element;
   }
 
+  /**
+  * Функция проверяет наличие очередной страницы для отображения
+  * элементов.
+  * @return {boolean}
+  */
   function isNextPageAvailable() {
-    return currentPage < Math.ceil(reviews.length / PAGE_SIZE);
+    return currentPage < Math.ceil(initiallyLoaded.length / PAGE_SIZE);
   }
 
+  /**
+  * Инициализация фильтров
+  */
   function initFilters() {
     var filtersContainer = document.querySelector('.reviews-filter');
 
     filtersContainer.addEventListener('click', function(evt) {
+      evt.preventDefault();
+
       var clickedFilter = evt.target;
-      setFilterForReviews(clickedFilter.id);
+
+      if (doesHaveParent(clickedFilter, 'reviews-filter')) {
+        setActiveFilter(clickedFilter.control.id);
+      }
+
     });
   }
 
+  /**
+  * Активизирует фильтрацию списка отзывов по filterId
+  * @param {string} filterId
+  */
+  function setActiveFilter(filterId) {
+    filterReviews(filterId);
+    currentPage = 0;
+    renderReviews(currentPage, true);
+
+    reviewsFiltersRadioBtn.value = filterId;
+  }
+
+  /**
+  * Функция определяет наличие класс (className) у
+  * элемента (element) с учетом вложенности
+  * @param {Element} element
+  * @param {string} className
+  */
   function doesHaveParent(element, className) {
     do {
       if (element.classList.contains(className)) {
@@ -261,6 +314,9 @@
     return false;
   }
 
+  /**
+  * Инициализация фотогалерии
+  */
   function initGallery() {
     var imagesList = document.querySelectorAll('.photogallery a.photogallery-image img');
     var imagesListArray = Array.prototype.slice.call(imagesList);

@@ -25,9 +25,6 @@
     newReviewElement.querySelector('.review-rating').classList.add(ratingStarsClassName[this._data['rating']]);
     newReviewElement.querySelector('.review-text').textContent = this._data['description'];
 
-    newReviewElement.querySelector('.review-rating').classList.add(ratingStarsClassName[this._data['rating']]);
-    newReviewElement.querySelector('.review-text').textContent = this._data['description'];
-
     if (this._data['author']['picture']) {
 
       var authorPicture = new Image();
