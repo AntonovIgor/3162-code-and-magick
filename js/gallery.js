@@ -72,7 +72,7 @@
       return;
     }
 
-    this._currentPhoto = index;
+    this._currentPhoto = newIndex;
     this._showCurrentPhoto();
   };
 

@@ -317,6 +317,10 @@
   /**
   * Инициализация фотогалерии
   */
+  // TODO
+  // Таких длинных селекторов быть не должно.
+  // Тем более, что ты можешь искать фотки не по всему документу, а внутри
+  // .photogallery, который ты уже "нашел" и сохранил в переменную.
   function initGallery() {
     var imagesList = document.querySelectorAll('.photogallery a.photogallery-image img');
     var imagesListArray = Array.prototype.slice.call(imagesList);
