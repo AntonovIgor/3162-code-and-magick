@@ -27,7 +27,7 @@
   /**
   * Конструктор объекта типа Review
   * @constructor
-  * @param {Array.<object>}
+  * @param {Array.<object>} data
   */
   var Review = function(data) {
     this._data = data;
