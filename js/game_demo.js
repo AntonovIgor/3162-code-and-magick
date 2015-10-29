@@ -1,3 +1,4 @@
+/* global Game: true */
 'use strict';
 
 (function() {
@@ -9,13 +10,42 @@
   var TIMEOUT_FOR_PARALLAX = 100;
 
   /**
+   * ID возможных ответов функций, проверяющих успех прохождения уровня.
+   * CONTINUE говорит о том, что раунд не закончен и игру нужно продолжать,
+   * WIN о том, что раунд выигран, FAIL — о поражении. PAUSE о том, что игру
+   * нужно прервать.
+   * @enum {number}
+   */
+  var Verdict = {
+    'CONTINUE': 0,
+    'WIN': 1,
+    'FAIL': 2,
+    'PAUSE': 3,
+    'INTRO': 4
+  };
+
+  /**
+  * Инициализация игрового мира
+  * @type {Game}
+  */
+  var game = new Game(document.querySelector('.demo'));
+
+  /**
   * Контейнер с облаками
   */
   var headerCloudsContainer = document.querySelector('.header-clouds');
 
   changeCloudsPosition();
   initScroll();
+  initGame();
 
+  /**
+  * Инициализация игры
+  */
+  function initGame() {
+    game.initializeLevelAndStart();
+    game.setGameStatus(Verdict.INTRO);
+  }
   /**
   * Инициализация скролла. Если находимся в зоне видимости,  то
   * начинаем сдвигать облака
@@ -37,7 +67,10 @@
   */
   function checkCloudPosition() {
     if (isVisiblePosition()) {
+      game.setGameStatus(Verdict.CONTINUE);
       window.dispatchEvent(new CustomEvent('hideBlockWithColouds'));
+    } else {
+      game.setGameStatus(Verdict.PAUSE);
     }
   }
 

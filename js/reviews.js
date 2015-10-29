@@ -317,11 +317,19 @@
   * Инициализация фотогалерии
   */
   function initGallery() {
-    var imagesList = galleryContainer.querySelectorAll('a.photogallery-image img');
+    var imagesList = galleryContainer.querySelectorAll('a.photogallery-image');
     var imagesListArray = Array.prototype.slice.call(imagesList);
+    var allImages = [];
 
     imagesListArray.forEach(function(item) {
-      picturesForGallery.push(item.src);
+      var image = item.querySelectorAll('img')[0];
+      allImages.push(image.src);
+
+      if (item['dataset'] && item['dataset'].replacementVideo) {
+        picturesForGallery.push({src: image.src, preview: item['dataset'].replacementVideo});
+      } else {
+        picturesForGallery.push({src: image.src});
+      }
     });
 
     galleryContainer.addEventListener('click', function(evt) {
@@ -329,7 +337,7 @@
 
       if (doesHaveParent(evt.target, 'photogallery-image')) {
         gallery.setPhotos(picturesForGallery);
-        gallery.show(picturesForGallery.indexOf(evt.target.src));
+        gallery.show(allImages.indexOf(evt.target.src));
       }
     });
   }

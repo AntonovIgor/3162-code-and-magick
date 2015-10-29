@@ -76,6 +76,18 @@
   var ObjectsBehaviour = {};
 
   /**
+  * Массив сообщений для вывода пользователю
+  * @type {Array.<Array>}
+  */
+  var MessagesForUser = {
+    'INTRO': ['Жми "Пробел" для старта', 'Упраляй персонажем СТРЕЛКАМИ', 'Бросай огненные шары shift\'ом'],
+    'WIN': ['Ура!!!', 'Враги повержены!', 'Поздравляем с победой, герой!'],
+    'FAIL': ['Упссс!', 'Кажется, сегодня не ваш день', 'Попробуем еще раз?', 'Для перезапуска нажмите "Пробел"'],
+    'PAUSE': ['Пауза!', '', 'Для старта нажмите "ПРОБЕЛ"']
+  };
+
+  /*
+  /**
    * Обновление движения мага. Движение мага зависит от нажатых в данный момент
    * стрелок. Маг может двигаться одновременно по горизонтали и по вертикали.
    * На движение мага влияет его пересечение с препятствиями.
@@ -374,21 +386,65 @@
     },
 
     /**
+    * Отрисовка canvas
+    */
+    _makeLayout: function() {
+
+      this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      this.ctx.beginPath();
+      this.ctx.moveTo(310, 160);
+      this.ctx.lineTo(610, 160);
+      this.ctx.lineTo(640, 260);
+      this.ctx.lineTo(330, 290);
+
+      this.ctx.fill();
+
+      this.ctx.fillStyle = '#FFFFFF';
+
+      this.ctx.beginPath();
+      this.ctx.moveTo(300, 150);
+      this.ctx.lineTo(600, 150);
+      this.ctx.lineTo(630, 250);
+      this.ctx.lineTo(320, 280);
+
+      this.ctx.fill();
+
+    },
+
+    _printSomeMessage: function(message) {
+      this.ctx.fillStyle = '#000000';
+      this.ctx.textAlign = 'center';
+      this.ctx.font = '16px PT Mono';
+
+      var x = 470;
+      var y = 190;
+      var interval = 25;
+
+      message.forEach(function(item, i) {
+        this.ctx.fillText(item, x, y + i * interval);
+      }, this);
+    },
+
+    /**
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          console.log('you have won!');
+          this._makeLayout();
+          this._printSomeMessage(MessagesForUser.WIN);
           break;
         case Verdict.FAIL:
-          console.log('you have failed!');
+          this._makeLayout();
+          this._printSomeMessage(MessagesForUser.FAIL);
           break;
         case Verdict.PAUSE:
-          console.log('game is on pause!');
+          this._makeLayout();
+          this._printSomeMessage(MessagesForUser.PAUSE);
           break;
         case Verdict.INTRO:
-          console.log('welcome to the game! Press Space to start');
+          this._makeLayout();
+          this._printSomeMessage(MessagesForUser.INTRO);
           break;
       }
     },
@@ -665,7 +721,5 @@
   window.Game = Game;
   window.Game.Verdict = Verdict;
 
-  var game = new Game(document.querySelector('.demo'));
-  game.initializeLevelAndStart();
-  game.setGameStatus(Verdict.INTRO);
+
 })();
