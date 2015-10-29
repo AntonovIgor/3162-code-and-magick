@@ -145,7 +145,6 @@
   * отфильтрованный список и записывает примененный фильтр
   * в локальное хранилище.
   * @param {string} filterId
-  * @return {Array.<Object>}
   */
   function filterReviews(filterId) {
     var filteredReviews = initiallyLoaded.slice(0);
@@ -317,12 +316,8 @@
   /**
   * Инициализация фотогалерии
   */
-  // TODO
-  // Таких длинных селекторов быть не должно.
-  // Тем более, что ты можешь искать фотки не по всему документу, а внутри
-  // .photogallery, который ты уже "нашел" и сохранил в переменную.
   function initGallery() {
-    var imagesList = document.querySelectorAll('.photogallery a.photogallery-image img');
+    var imagesList = galleryContainer.querySelectorAll('a.photogallery-image img');
     var imagesListArray = Array.prototype.slice.call(imagesList);
 
     imagesListArray.forEach(function(item) {
@@ -330,6 +325,8 @@
     });
 
     galleryContainer.addEventListener('click', function(evt) {
+      evt.preventDefault();
+
       if (doesHaveParent(evt.target, 'photogallery-image')) {
         gallery.setPhotos(picturesForGallery);
         gallery.show(picturesForGallery.indexOf(evt.target.src));
