@@ -277,7 +277,7 @@
 
       var clickedFilter = evt.target;
 
-      if (doesHaveParent(clickedFilter, 'reviews-filter')) {
+      if (doesHaveParent(clickedFilter, 'reviews-filter-item')) {
         setActiveFilter(clickedFilter.control.id);
       }
 

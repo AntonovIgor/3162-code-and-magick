@@ -114,7 +114,7 @@
     _onImageLoad: function(evt) {
       clearTimeout(this._authorPictureLoadTimeOut);
 
-      var loadedImage = evt.path[0];
+      var loadedImage = evt.currentTarget;
       this._cleanupImageListeners(loadedImage);
 
       var authorPhoto = this.el.querySelector('.review-author');
