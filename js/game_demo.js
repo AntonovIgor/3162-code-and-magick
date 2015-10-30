@@ -10,21 +10,6 @@ define([
   var TIMEOUT_FOR_PARALLAX = 100;
 
   /**
-   * ID возможных ответов функций, проверяющих успех прохождения уровня.
-   * CONTINUE говорит о том, что раунд не закончен и игру нужно продолжать,
-   * WIN о том, что раунд выигран, FAIL — о поражении. PAUSE о том, что игру
-   * нужно прервать.
-   * @enum {number}
-   */
-  var Verdict = {
-    'CONTINUE': 0,
-    'WIN': 1,
-    'FAIL': 2,
-    'PAUSE': 3,
-    'INTRO': 4
-  };
-
-  /**
   * Инициализация игрового мира
   * @type {Game}
   */
@@ -44,7 +29,7 @@ define([
   */
   function initGame() {
     game.initializeLevelAndStart();
-    game.setGameStatus(Verdict.INTRO);
+    game.setGameStatus(GameData.Verdict.INTRO);
   }
   /**
   * Инициализация скролла. Если находимся в зоне видимости,  то
@@ -67,10 +52,10 @@ define([
   */
   function checkCloudPosition() {
     if (isVisiblePosition()) {
-      game.setGameStatus(Verdict.CONTINUE);
+      game.setGameStatus(GameData.Verdict.CONTINUE);
       window.dispatchEvent(new CustomEvent('hideBlockWithColouds'));
     } else {
-      game.setGameStatus(Verdict.PAUSE);
+      game.setGameStatus(GameData.Verdict.PAUSE);
     }
   }
 
