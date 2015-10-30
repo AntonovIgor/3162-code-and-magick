@@ -71,6 +71,10 @@
   */
   var btnLoadNextPage = document.querySelector('.reviews-controls-more');
 
+  /**
+  * @type {string}
+  */
+  var currentFilterName = '';
 
 
   showHideBlock(reviewsFilter, false);
@@ -80,8 +84,7 @@
     initiallyLoaded = jqXHR.responseJSON;
 
     initFilters();
-    setActiveFilter(localStorage.getItem('filterId') || 'sort-by-default');
-
+    parseURL();
   }).fail(function() {
     showLoadFailture();
   });
@@ -89,8 +92,28 @@
   showHideBlock(reviewsFilter, true);
   initGallery();
   initBtnLoadNextPage();
+  initHashChange();
 
 
+  /*
+  * Инициализация обработчика, следящего за изм. адресной строки
+  */
+  function initHashChange() {
+    window.addEventListener('hashchange', parseURL);
+  }
+
+  /*
+  * Разрабор URL
+  */
+  function parseURL() {
+    var hashMatch = location.hash.match(/^#filters\/(\S+)$/);
+    var filterName = hashMatch ? hashMatch[1] : 'reviews-all';
+
+    if (currentFilterName !== filterName) {
+      currentFilterName = filterName;
+      setActiveFilter(currentFilterName);
+    }
+  }
 
   /**
   * Инициализация кнопки для загрузки дополнительных отзывов
@@ -190,7 +213,6 @@
 
     }
 
-    localStorage.setItem('filterId', filterId);
     reviewsCollection.reset(filteredReviews);
   }
 
@@ -277,7 +299,7 @@
       var clickedFilter = evt.target;
 
       if (doesHaveParent(clickedFilter, 'reviews-filter-item')) {
-        setActiveFilter(clickedFilter.control.id);
+        window.location.hash = 'filters/' + clickedFilter.control.id;
       }
 
     });
