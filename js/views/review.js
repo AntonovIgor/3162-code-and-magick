@@ -1,9 +1,6 @@
-/* global Backbone: true */
-
 'use strict';
 
-(function() {
-
+define(function() {
   /**
   * @type {Object.<string, string>}
   */
@@ -132,5 +129,5 @@
 
 
   });
-  window.ReviewView = ReviewView;
-})();
+  return ReviewView;
+});

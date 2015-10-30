@@ -1,8 +1,8 @@
-/* global Game: true */
 'use strict';
 
-(function() {
-
+define([
+  'game'
+], function(GameData) {
   /**
   * Время ожидания для параллакса
   * @const {number}
@@ -28,7 +28,7 @@
   * Инициализация игрового мира
   * @type {Game}
   */
-  var game = new Game(document.querySelector('.demo'));
+  var game = new GameData.Game(document.querySelector('.demo'));
 
   /**
   * Контейнер с облаками
@@ -105,5 +105,4 @@
     var STEP = 100;
     return headerCloudsContainer.getBoundingClientRect().bottom - STEP;
   }
-
-})();
+});

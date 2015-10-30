@@ -1,6 +1,6 @@
 'use strict';
 
-(function() {
+define(function() {
 
   /**
    * @constructor
@@ -31,5 +31,6 @@
 
   });
 
-  window.ReviewModel = ReviewModel;
-})();
+  return ReviewModel;
+
+});

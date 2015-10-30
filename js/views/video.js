@@ -1,6 +1,6 @@
 'use strict';
 
-(function() {
+define(function() {
   /**
    * @constructor
    * @param {Object} options
@@ -43,5 +43,6 @@
 
   });
 
-  window.GalleryVideo = GalleryVideo;
-})();
+  return GalleryVideo;
+
+});

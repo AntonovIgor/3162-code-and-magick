@@ -1,9 +1,10 @@
-/* global Gallery: true ReviewsCollection: true ReviewView: true */
 'use strict';
 
-(function() {
-
-
+define([
+  'gallery',
+  'models/reviews',
+  'views/review'
+], function(Gallery, ReviewsCollection, ReviewView) {
   /**
    * @const
    * @type {number}
@@ -364,4 +365,5 @@
     });
   }
 
-})();
+
+});

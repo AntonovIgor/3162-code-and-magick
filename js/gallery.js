@@ -1,8 +1,9 @@
-/* global GalleryPhoto: true GalleryVideo: true */
 'use strict';
 
-(function() {
-
+define([
+  'views/photo',
+  'views/video'
+], function(GalleryPhoto, GalleryVideo) {
   /**
   * Список констант с кодами нажатых клавиш
   * @enum {number}
@@ -185,6 +186,5 @@
     this._currentPhoto = 0;
   };
 
-  window.Gallery = Gallery;
-
-})();
+  return Gallery;
+});
