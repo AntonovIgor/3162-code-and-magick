@@ -54,14 +54,24 @@ header {
   z-index: 0;
 }
 
-.header-wizard {
-  background: url('../img/wizard.gif') no-repeat;
+.header-fence {
+  background: url('../img/fence.gif') no-repeat;
   bottom: 0;
-  height: 90px;
+  height: 48px;
   left: 50%;
-  margin-left: -300px;
+  margin-left: -400px;
   position: absolute;
-  width: 93px;
+  width: 91px;
+}
+
+.header-tree {
+  background: url('../img/tree.gif') no-repeat;
+  bottom: 0;
+  height: 137px;
+  left: 50%;
+  margin-left: 300px;
+  position: absolute;
+  width: 120px;
 }
 
 .header-soon {
@@ -257,6 +267,12 @@ input[type=radio]:checked + .reviews-filter-item {
   vertical-align: middle;
 }
 
+.review-quiz-answer-active {
+  color: #fff;
+  cursor: default;
+  text-decoration: none;
+}
+
 .reviews-controls {
   text-align: center;
 }
@@ -410,19 +426,6 @@ input[type=radio]:checked + .review-mark-label {
   cursor: pointer;
   text-decoration: underline;
 }
-
-
-/* antonov */
-
-.notify-error {
-    background-color: #E0384A;
-}
-
-.notify-ok {
-  background-color: #38E08E;
-}
-
-/* ./ antonov */
 
 .overlay-gallery {
   text-align: center;
